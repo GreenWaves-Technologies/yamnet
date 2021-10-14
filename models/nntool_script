@@ -1,0 +1,14 @@
+set log_level INFO
+adjust 
+fusions --scale8 
+dsp_preprocessing input_1 MFCCPreprocessingParameters --config_json models/logmel_config.json
+set input_norm_func "x: x/(1<<15)"
+aquant --scheme SQ8 calibration_features/speech_whistling_cut.wav
+qtune MfccPreprocessing float float16
+qtune input_1 pow2 int16
+
+nodeoption input_1 ALLOCATE 1
+set graph_produce_node_names true
+set graph_produce_operinfos true
+set graph_monitor_cycles true
+save_state

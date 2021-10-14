@@ -1,0 +1,15 @@
+{
+        "window": "hanning",
+        "n_fft": 512,
+        "frame_size": 400,
+        "frame_step": 160,
+        "sample_rate": 16000,
+        "n_fbanks": 64,
+        "fbank_type": "tensorflow",
+        "n_dct": 0,
+        "fmin": 125.0,
+        "fmax": 7500.0,
+        "logtype": "natural",
+        "log_offset": 0.001,
+        "magsquared": false
+}
