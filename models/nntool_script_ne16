@@ -3,15 +3,15 @@ adjust
 fusions --scale8 
 dsp_preprocessing input_1 MFCCPreprocessingParameters --config_json models/logmel_config.json
 set input_norm_func "x: x/(1<<15)"
-aquant --scheme SQ8 calibration_features/speech_whistling_cut.wav 
-
-qtune --step MfccPreprocessing scheme=float float_type=float32
+aquant --scheme SQ8 calibration_features/speech_whistling_cut.wav --use_ne16
+adjust
+qtune --step MfccPreprocessing scheme=float float_type=bfloat16
 qtune --step input_1 scheme=pow2
 fusions --scale8
 
 nodeoption input_1 ALLOCATE 1
-#set graph_dump_tensor 4
-#set graph_dump_one_node S64_Op_MfccPreprocessing
+set graph_dump_tensor 4
+set graph_dump_one_node S97_Op_FULLY_CONNECTED_0_32_fusion
 set graph_produce_node_names true
 set graph_produce_operinfos true
 set graph_monitor_cycles true

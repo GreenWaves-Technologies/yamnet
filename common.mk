@@ -13,7 +13,7 @@ TRAINED_MODEL = models/yamnet.tflite
 
 MODEL_EXPRESSIONS = 
 
-NNTOOL_EXTRA_FLAGS += --use_hard_sigmoid
+NNTOOL_EXTRA_FLAGS += #--use_hard_sigmoid #-q
 
 
 # Memory sizes for cluster L1, SoC L2 and Flash
@@ -26,7 +26,17 @@ CLUSTER_STACK_SIZE=4096
 CLUSTER_SLAVE_STACK_SIZE=1024
 CLUSTER_NUM_CORES=8
 
-NNTOOL_SCRIPT = models/nntool_script
+ifeq ($(MODEL_NE16), 1)
+	NNTOOL_SCRIPT = models/nntool_script_ne16
+	MODEL_SUFFIX = _NE16
+else
+ifeq ($(MODEL_HWC), 1)
+	NNTOOL_SCRIPT = models/nntool_script_hwc
+	MODEL_SUFFIX = _HWC
+else
+	NNTOOL_SCRIPT = models/nntool_script
+endif
+endif
 
 
 $(info GEN ... $(CNN_GEN))

@@ -18,7 +18,7 @@
 #define pmsis_exit(n) exit(n)
 #endif
 
-#define  BUF_SIZE   16000
+#define  BUF_SIZE   15600
 #ifndef STACK_SIZE
 #define STACK_SIZE      1024
 #endif
@@ -47,17 +47,20 @@ static void cluster()
 
     yamnetCNN(Output_1);
     printf("Runner completed\n");
+    int max_confidence = 0, max_idx = 0;
+    for (int i=0; i<521; i++) {
+        if (Output_1[i] > max_confidence) {
+            max_confidence = Output_1[i];
+            max_idx = i;
+        }
+    }
+    printf("\n\nClass Predicted: %3d with confidence: %3d\n", max_idx, max_confidence);
 
 }
 
 int test_yamnet(void)
 {
     printf("Entering main controller\n");
-    /* ----------------> 
-     * Put here Your input settings
-     * <---------------
-     */
-    
 
 #ifndef __EMUL__
     /* Configure And open cluster. */
@@ -100,12 +103,14 @@ int test_yamnet(void)
     {
       unsigned int TotalCycles = 0, TotalOper = 0;
       printf("\n");
-      for (int i=0; i<(sizeof(AT_GraphPerf)/sizeof(unsigned int)); i++) {
-        printf("%45s: Cycles: %10u, Operations: %10u, Operations/Cycle: %f\n", AT_GraphNodeNames[i], AT_GraphPerf[i], AT_GraphOperInfosNames[i], ((float) AT_GraphOperInfosNames[i])/ AT_GraphPerf[i]);
+      for (unsigned int i=0; i<(sizeof(AT_GraphPerf)/sizeof(unsigned int)); i++) {
         TotalCycles += AT_GraphPerf[i]; TotalOper += AT_GraphOperInfosNames[i];
       }
+      for (unsigned int i=0; i<(sizeof(AT_GraphPerf)/sizeof(unsigned int)); i++) {
+        printf("%45s: Cycles: %10u (%%: %5.2f%%), Operations: %10u (%%: %5.2f%%), Operations/Cycle: %f\n", AT_GraphNodeNames[i], AT_GraphPerf[i], 100*((float) (AT_GraphPerf[i]) / TotalCycles), AT_GraphOperInfosNames[i], 100*((float) (AT_GraphOperInfosNames[i]) / TotalOper), ((float) AT_GraphOperInfosNames[i])/ AT_GraphPerf[i]);
+      }
       printf("\n");
-      printf("%45s: Cycles: %10u, Operations: %10u, Operations/Cycle: %f\n", "Total", TotalCycles, TotalOper, ((float) TotalOper)/ TotalCycles);
+      printf("%45s: Cycles: %10u (%%:100.00%%), Operations: %10u (%%:100.00%%), Operations/Cycle: %f\n", "Total", TotalCycles, TotalOper, ((float) TotalOper)/ TotalCycles);
       printf("\n");
     }
 #endif
