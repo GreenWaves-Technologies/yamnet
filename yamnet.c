@@ -13,6 +13,7 @@
 #include "yamnet.h"
 #include "yamnetKernels.h"
 #include "gaplib/wavIO.h"
+#include "yamnet_class_map.h"
 
 #ifdef __EMUL__
 #define pmsis_exit(n) exit(n)
@@ -29,6 +30,7 @@ signed char Output_1[521];
 #define __STR(__s) #__s
 char *FileName = __XSTR(AT_WAV);
 int max_confidence, max_idx;
+
 static void cluster()
 {
 
@@ -54,7 +56,7 @@ static void cluster()
             max_idx = i;
         }
     }
-    printf("\n\nClass Predicted: %3d with confidence: %3d\n", max_idx, max_confidence);
+    printf("\n\nClass Predicted: \"%s\" (%d) with confidence: %3d\n", class_titles[max_idx], max_idx, max_confidence);
 
 }
 
