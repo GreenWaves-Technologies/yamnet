@@ -7,6 +7,11 @@
 ifndef GAP_SDK_HOME
   $(error Source sourceme in gap_sdk first)
 endif
+
+ifneq '$(TARGET_CHIP_FAMILY)' 'GAP9'
+  $(error This Project is only for GAP9)
+endif
+
 WAVFILE = $(CURDIR)/calibration_features/speech_whistling_cut.wav
 
 include common.mk
@@ -36,11 +41,11 @@ include common/model_decl.mk
 APP = $(MODEL_PREFIX)
 APP_SRCS += $(MODEL_PREFIX).c $(MODEL_GEN_C) $(MODEL_COMMON_SRCS) $(CNN_LIB) $(GAP_LIB_PATH)/wav_io/wavIO.c 
 
-APP_CFLAGS  += -g -O3 -mno-memcpy -fno-tree-loop-distribute-patterns
+APP_CFLAGS  += -w -g -O3 -mno-memcpy -fno-tree-loop-distribute-patterns
 APP_CFLAGS  += -I. -I$(MODEL_COMMON_INC) -I$(TILER_EMU_INC) -I$(TILER_INC) $(CNN_LIB_INCLUDE) -I$(MODEL_BUILD) -I$(GAP_SDK_HOME)/libs/gap_lib/include 
 APP_CFLAGS  += -DPERF -DAT_MODEL_PREFIX=$(MODEL_PREFIX) $(MODEL_SIZE_CFLAGS)
 APP_CFLAGS  += -DSTACK_SIZE=$(CLUSTER_STACK_SIZE) -DSLAVE_STACK_SIZE=$(CLUSTER_SLAVE_STACK_SIZE)
-APP_CFLAGS  += -DAT_WAV=$(WAVFILE) -DF16_DSP_BFLOAT
+APP_CFLAGS  += -DAT_WAV=$(WAVFILE) -DF16_DSP_BFLOAT -DCI
 APP_LDFLAGS	+= -lm
 
 READFS_FILES=$(abspath $(MODEL_TENSORS))

@@ -28,7 +28,7 @@ signed char Output_1[521];
 #define __XSTR(__s) __STR(__s)
 #define __STR(__s) #__s
 char *FileName = __XSTR(AT_WAV);
-
+int max_confidence, max_idx;
 static void cluster()
 {
 
@@ -47,7 +47,7 @@ static void cluster()
 
     yamnetCNN(Output_1);
     printf("Runner completed\n");
-    int max_confidence = 0, max_idx = 0;
+    max_confidence = 0, max_idx = 0;
     for (int i=0; i<521; i++) {
         if (Output_1[i] > max_confidence) {
             max_confidence = Output_1[i];
@@ -114,6 +114,15 @@ int test_yamnet(void)
       printf("\n");
     }
 #endif
+    #ifdef CI
+    if(max_idx != 35 || max_confidence < 125){
+        printf("Results Error...\n");
+        pmsis_exit(1);
+    }
+    else
+        printf("Correct Results!\n");
+    #endif
+
 
     printf("Ended\n");
     pmsis_exit(0);
