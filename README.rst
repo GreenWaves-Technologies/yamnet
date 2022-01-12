@@ -1,12 +1,13 @@
 YAMNet
 =====
 
+Yamnet is a audio classification NN based on Mobilenet V1 architecture. The NN has been trained on `Audio Set Dataset`_ which contains 527 classes of audio events.  
 
 This project contains an implementation on GAP processor of YAMNet_ specialized for inference on mobile devices with the following changes:
 
-The model is quantized. This required retraining the model with Relu6 non-linearities instead of Relu, to limit activation ranges.
+* The model is quantized. This required retraining the model with Relu6 non-linearities instead of Relu, to limit activation ranges.
 
-The inference signature is simpler. We now take a single fixed-length frame of audio (15600 samples) and return a single vector of scores for 521 audio event classes.
+* The inference signature is simpler. We now take a single fixed-length frame of audio (15600 samples) and return a single vector of scores for 521 audio event classes.
 
 Please refer to the original YAMNet_ for more information about the model description, as well as suitable uses and limitations.
 
@@ -26,3 +27,4 @@ The model returns a 2-D float32 Tensor of shape (1, 521) containing the predicte
 
 .. _YAMNet: https://tfhub.dev/google/yamnet/1
 .. _Tensor Flow Hub project: https://tfhub.dev/google/lite-model/yamnet/classification/tflite/1
+.. _Audio Set Dataset: https://research.google/pubs/pub45857/
