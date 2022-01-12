@@ -12,6 +12,7 @@ fusions --scale8
 nodeoption input_1 ALLOCATE 1
 #set graph_dump_tensor 4
 #set graph_dump_one_node S64_Op_MfccPreprocessing
+#set graph_trace_exec true
 set graph_produce_node_names true
 set graph_produce_operinfos true
 set graph_monitor_cycles true
