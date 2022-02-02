@@ -5,6 +5,7 @@
         "frame_step": 160,
         "sample_rate": 16000,
         "n_fbanks": 64,
+        "n_frames": 96,
         "fbank_type": "tensorflow",
         "n_dct": 0,
         "fmin": 125.0,
