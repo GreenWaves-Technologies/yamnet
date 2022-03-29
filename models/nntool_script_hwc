@@ -3,7 +3,7 @@ adjust
 fusions --scale8 
 dsp_preprocessing input_1 MFCCPreprocessingParameters --config_json models/logmel_config.json
 set input_norm_func "x: x/(1<<15)"
-aquant --scheme SQ8 calibration_features/speech_whistling_cut.wav --hwc
+aquant --scheme SQ8 calibration_features/speech_whistling_cut.wav --hwc --slices 0 15600 1
 adjust
 qtune --step MfccPreprocessing scheme=float float_type=float32
 qtune --step input_1 scheme=pow2
