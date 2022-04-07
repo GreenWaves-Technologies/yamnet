@@ -68,6 +68,7 @@ int test_yamnet(void)
     /* Configure And open cluster. */
     struct pi_device cluster_dev = {0};
     struct pi_cluster_conf cl_conf = {0};
+    pi_cluster_conf_init(&cl_conf);
     cl_conf.id = 0;
     pi_open_from_conf(&cluster_dev, (void *) &cl_conf);
     if (pi_cluster_open(&cluster_dev))
