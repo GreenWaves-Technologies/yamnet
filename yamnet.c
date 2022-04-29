@@ -122,10 +122,10 @@ int test_yamnet(void)
         TotalCycles += AT_GraphPerf[i]; TotalOper += AT_GraphOperInfosNames[i];
       }
       for (unsigned int i=0; i<(sizeof(AT_GraphPerf)/sizeof(unsigned int)); i++) {
-        printf("%45s: Cycles: %10u, Cyc %%: %5.2f%%, Operations: %10u, Op %%: %5.2f%%, Operations/Cycle: %f\n", AT_GraphNodeNames[i], AT_GraphPerf[i], 100*((float) (AT_GraphPerf[i]) / TotalCycles), AT_GraphOperInfosNames[i], 100*((float) (AT_GraphOperInfosNames[i]) / TotalOper), ((float) AT_GraphOperInfosNames[i])/ AT_GraphPerf[i]);
+        printf("%45s: Cycles: %10u, Cyc%%: %5.1f%%, Operations: %10u, Op%%: %5.1f%%, Operations/Cycle: %f\n", AT_GraphNodeNames[i], AT_GraphPerf[i], 100*((float) (AT_GraphPerf[i]) / TotalCycles), AT_GraphOperInfosNames[i], 100*((float) (AT_GraphOperInfosNames[i]) / TotalOper), ((float) AT_GraphOperInfosNames[i])/ AT_GraphPerf[i]);
       }
       printf("\n");
-      printf("%45s: Cycles: %10u, Cyc %%:100.00%%, Operations: %10u, Op %%:100.00%%, Operations/Cycle: %f\n", "Total", TotalCycles, TotalOper, ((float) TotalOper)/ TotalCycles);
+      printf("%45s: Cycles: %10u, Cyc%%: 100.0%%, Operations: %10u, Op%%: 100.0%%, Operations/Cycle: %f\n", "Total", TotalCycles, TotalOper, ((float) TotalOper)/ TotalCycles);
       printf("\n");
     }
 #endif
