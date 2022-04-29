@@ -19,18 +19,32 @@ include $(RULES_DIR)/at_common_decl.mk
 
 io=host
 
-RAM_FLASH_TYPE ?= HYPER
-#PMSIS_OS=freertos
+FLASH_TYPE ?= HYPER
+RAM_TYPE   ?= HYPER
 
-ifeq '$(RAM_FLASH_TYPE)' 'HYPER'
-APP_CFLAGS += -DUSE_HYPER
-MODEL_L3_EXEC=hram
-MODEL_L3_CONST=hflash
-else
-APP_CFLAGS += -DUSE_SPI
-CONFIG_SPIRAM = 1
-MODEL_L3_EXEC=qspiram
-MODEL_L3_CONST=qpsiflash
+ifeq '$(FLASH_TYPE)' 'HYPER'
+  MODEL_L3_FLASH=AT_MEM_L3_HFLASH
+else ifeq '$(FLASH_TYPE)' 'MRAM'
+  MODEL_L3_FLASH=AT_MEM_L3_MRAMFLASH
+  READFS_FLASH = target/chip/soc/mram
+else ifeq '$(FLASH_TYPE)' 'QSPI'
+  MODEL_L3_FLASH=AT_MEM_L3_QSPIFLASH
+  READFS_FLASH = target/board/devices/spiflash
+else ifeq '$(FLASH_TYPE)' 'OSPI'
+  MODEL_L3_FLASH=AT_MEM_L3_OSPIFLASH
+  #READFS_FLASH = target/board/devices/ospiflash
+else ifeq '$(FLASH_TYPE)' 'DEFAULT'
+  MODEL_L3_FLASH=AT_MEM_L3_DEFAULTFLASH
+endif
+
+ifeq '$(RAM_TYPE)' 'HYPER'
+  MODEL_L3_RAM=AT_MEM_L3_HRAM
+else ifeq '$(RAM_TYPE)' 'QSPI'
+  MODEL_L3_RAM=AT_MEM_L3_QSPIRAM
+else ifeq '$(RAM_TYPE)' 'OSPI'
+  MODEL_L3_RAM=AT_MEM_L3_OSPIRAM
+else ifeq '$(RAM_TYPE)' 'DEFAULT'
+  MODEL_L3_RAM=AT_MEM_L3_DEFAULTRAM
 endif
 
 include common/model_decl.mk
@@ -45,8 +59,17 @@ APP_CFLAGS  += -w -g -O3 -mno-memcpy -fno-tree-loop-distribute-patterns
 APP_CFLAGS  += -I. -I$(MODEL_COMMON_INC) -I$(TILER_EMU_INC) -I$(TILER_INC) $(CNN_LIB_INCLUDE) -I$(MODEL_BUILD) -I$(GAP_SDK_HOME)/libs/gap_lib/include 
 APP_CFLAGS  += -DPERF -DAT_MODEL_PREFIX=$(MODEL_PREFIX) $(MODEL_SIZE_CFLAGS)
 APP_CFLAGS  += -DSTACK_SIZE=$(CLUSTER_STACK_SIZE) -DSLAVE_STACK_SIZE=$(CLUSTER_SLAVE_STACK_SIZE)
-APP_CFLAGS  += -DAT_WAV=$(WAVFILE) -DF16_DSP_BFLOAT -DCI
+APP_CFLAGS  += -DAT_WAV=$(WAVFILE) -DF16_DSP_BFLOAT -DCI -DFREQ_FC=$(FREQ_FC) -DFREQ_CL=$(FREQ_CL) -DFREQ_PE=$(FREQ_PE)
 APP_LDFLAGS	+= -lm
+ifneq '$(platform)' 'gvsoc'
+ifdef GPIO_MEAS
+APP_CFLAGS += -DGPIO_MEAS
+endif
+VOLTAGE?=800
+ifeq '$(PMSIS_OS)' 'pulpos'
+  APP_CFLAGS += -DVOLTAGE=$(VOLTAGE)
+endif
+endif
 
 READFS_FILES=$(abspath $(MODEL_TENSORS))
 

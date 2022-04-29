@@ -34,6 +34,7 @@ int max_confidence, max_idx;
 static void cluster()
 {
 
+    printf("Opening file: %s\n", FileName);
     header_struct header_info;
     if (ReadWavFromFile(FileName, Input_1, BUF_SIZE*sizeof(short), &header_info)){
         printf("Error reading wav file\n");
@@ -47,7 +48,9 @@ static void cluster()
     gap_cl_resethwtimer();
     #endif
 
+    GPIO_HIGH();
     yamnetCNN(Output_1);
+    GPIO_LOW();
     printf("Runner completed\n");
     max_confidence = 0, max_idx = 0;
     for (int i=0; i<521; i++) {
@@ -65,6 +68,7 @@ int test_yamnet(void)
     printf("Entering main controller\n");
 
 #ifndef __EMUL__
+    OPEN_GPIO_MEAS();
     /* Configure And open cluster. */
     struct pi_device cluster_dev = {0};
     struct pi_cluster_conf cl_conf = {0};
@@ -77,6 +81,16 @@ int test_yamnet(void)
         printf("Cluster open failed !\n");
         pmsis_exit(-4);
     }
+    pi_freq_set(PI_FREQ_DOMAIN_FC, FREQ_FC*1000*1000);
+    pi_freq_set(PI_FREQ_DOMAIN_CL, FREQ_CL*1000*1000);
+    pi_freq_set(PI_FREQ_DOMAIN_PERIPH, FREQ_PE*1000*1000);
+    printf("Set FC Frequency = %d MHz, CL Frequency = %d MHz, PERIIPH Frequency = %d MHz\n",
+            pi_freq_get(PI_FREQ_DOMAIN_FC), pi_freq_get(PI_FREQ_DOMAIN_CL), pi_freq_get(PI_FREQ_DOMAIN_PERIPH));
+    #ifdef VOLTAGE
+    pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
+    pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
+    printf("Voltage: %dmV\n", VOLTAGE);
+    #endif
 #endif
     // IMPORTANT - MUST BE CALLED AFTER THE CLUSTER IS SWITCHED ON!!!!
     printf("Constructor\n");
@@ -108,10 +122,10 @@ int test_yamnet(void)
         TotalCycles += AT_GraphPerf[i]; TotalOper += AT_GraphOperInfosNames[i];
       }
       for (unsigned int i=0; i<(sizeof(AT_GraphPerf)/sizeof(unsigned int)); i++) {
-        printf("%45s: Cycles: %10u (%%: %5.2f%%), Operations: %10u (%%: %5.2f%%), Operations/Cycle: %f\n", AT_GraphNodeNames[i], AT_GraphPerf[i], 100*((float) (AT_GraphPerf[i]) / TotalCycles), AT_GraphOperInfosNames[i], 100*((float) (AT_GraphOperInfosNames[i]) / TotalOper), ((float) AT_GraphOperInfosNames[i])/ AT_GraphPerf[i]);
+        printf("%45s: Cycles: %10u, Cyc %%: %5.2f%%, Operations: %10u, Op %%: %5.2f%%, Operations/Cycle: %f\n", AT_GraphNodeNames[i], AT_GraphPerf[i], 100*((float) (AT_GraphPerf[i]) / TotalCycles), AT_GraphOperInfosNames[i], 100*((float) (AT_GraphOperInfosNames[i]) / TotalOper), ((float) AT_GraphOperInfosNames[i])/ AT_GraphPerf[i]);
       }
       printf("\n");
-      printf("%45s: Cycles: %10u (%%:100.00%%), Operations: %10u (%%:100.00%%), Operations/Cycle: %f\n", "Total", TotalCycles, TotalOper, ((float) TotalOper)/ TotalCycles);
+      printf("%45s: Cycles: %10u, Cyc %%:100.00%%, Operations: %10u, Op %%:100.00%%, Operations/Cycle: %f\n", "Total", TotalCycles, TotalOper, ((float) TotalOper)/ TotalCycles);
       printf("\n");
     }
 #endif
