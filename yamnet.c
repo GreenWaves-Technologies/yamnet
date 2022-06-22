@@ -30,16 +30,10 @@ signed char Output_1[521];
 #define __STR(__s) #__s
 char *FileName = __XSTR(AT_WAV);
 int max_confidence, max_idx;
+static header_struct header_info;
 
 static void cluster()
 {
-
-    printf("Opening file: %s\n", FileName);
-    header_struct header_info;
-    if (ReadWavFromFile(FileName, Input_1, BUF_SIZE*sizeof(short), &header_info)){
-        printf("Error reading wav file\n");
-        pmsis_exit(1);
-    }
     int num_samples = header_info.DataSize * 8 / (header_info.NumChannels * header_info.BitsPerSample);
 
     #ifdef PERF
@@ -87,9 +81,9 @@ int test_yamnet(void)
     printf("Set FC Frequency = %d MHz, CL Frequency = %d MHz, PERIIPH Frequency = %d MHz\n",
             pi_freq_get(PI_FREQ_DOMAIN_FC), pi_freq_get(PI_FREQ_DOMAIN_CL), pi_freq_get(PI_FREQ_DOMAIN_PERIPH));
     #ifdef VOLTAGE
-    pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
-    pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
-    printf("Voltage: %dmV\n", VOLTAGE);
+    // pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
+    // pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
+    // printf("Voltage: %dmV\n", VOLTAGE);
     #endif
 #endif
     // IMPORTANT - MUST BE CALLED AFTER THE CLUSTER IS SWITCHED ON!!!!
@@ -104,6 +98,12 @@ int test_yamnet(void)
 
     printf("Call cluster\n");
 #ifndef __EMUL__
+    printf("Opening file: %s\n", FileName);
+    if (ReadWavFromFile(FileName, Input_1, BUF_SIZE*sizeof(short), &header_info)){
+        printf("Error reading wav file\n");
+        pmsis_exit(1);
+    }
+    
     struct pi_cluster_task task;
     pi_cluster_task(&task, (void (*)(void *))cluster, NULL);
     pi_cluster_task_stacks(&task, NULL, SLAVE_STACK_SIZE);
