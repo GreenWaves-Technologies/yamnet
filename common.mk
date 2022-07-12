@@ -55,5 +55,5 @@ else
 endif
 endif
 
-
+include $(RULES_DIR)/at_common_decl.mk
 $(info GEN ... $(CNN_GEN))

@@ -11,13 +11,12 @@ endif
 ifneq '$(TARGET_CHIP_FAMILY)' 'GAP9'
   $(error This Project is only for GAP9)
 endif
+include common.mk
+include common/model_decl.mk
 
 WAVFILE = $(CURDIR)/calibration_features/speech_whistling_cut.wav
 
-include common.mk
-include $(RULES_DIR)/at_common_decl.mk
-
-io=host
+io?=host
 
 FLASH_TYPE ?= HYPER
 RAM_TYPE   ?= HYPER
@@ -46,11 +45,6 @@ else ifeq '$(RAM_TYPE)' 'OSPI'
 else ifeq '$(RAM_TYPE)' 'DEFAULT'
   MODEL_L3_RAM=AT_MEM_L3_DEFAULTRAM
 endif
-
-include common/model_decl.mk
-
-# pulpChip = GAP
-# PULP_APP = $(MODEL_PREFIX)
 
 APP = $(MODEL_PREFIX)
 APP_SRCS += $(MODEL_PREFIX).c $(MODEL_GEN_C) $(MODEL_COMMON_SRCS) $(CNN_LIB) $(GAP_LIB_PATH)/wav_io/wavIO.c 

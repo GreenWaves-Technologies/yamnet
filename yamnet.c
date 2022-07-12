@@ -33,15 +33,6 @@ int max_confidence, max_idx;
 
 static void cluster()
 {
-
-    printf("Opening file: %s\n", FileName);
-    header_struct header_info;
-    if (ReadWavFromFile(FileName, Input_1, BUF_SIZE*sizeof(short), &header_info)){
-        printf("Error reading wav file\n");
-        pmsis_exit(1);
-    }
-    int num_samples = header_info.DataSize * 8 / (header_info.NumChannels * header_info.BitsPerSample);
-
     #ifdef PERF
     printf("Start timer\n");
     gap_cl_starttimer();
@@ -101,6 +92,13 @@ int test_yamnet(void)
         pmsis_exit(-6);
     }
 
+    printf("Opening file: %s\n", FileName);
+    header_struct header_info;
+    if (ReadWavFromFile(FileName, Input_1, BUF_SIZE*sizeof(short), &header_info)){
+        printf("Error reading wav file\n");
+        pmsis_exit(1);
+    }
+    int num_samples = header_info.DataSize * 8 / (header_info.NumChannels * header_info.BitsPerSample);
 
     printf("Call cluster\n");
 #ifndef __EMUL__
