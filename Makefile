@@ -18,8 +18,8 @@ WAVFILE = $(CURDIR)/calibration_features/speech_whistling_cut.wav
 
 io?=host
 
-FLASH_TYPE ?= HYPER
-RAM_TYPE   ?= HYPER
+FLASH_TYPE ?= DEFAULT
+RAM_TYPE   ?= DEFAULT
 
 ifeq '$(FLASH_TYPE)' 'HYPER'
   MODEL_L3_FLASH=AT_MEM_L3_HFLASH
