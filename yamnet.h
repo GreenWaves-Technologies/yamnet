@@ -15,6 +15,6 @@
 #include <string.h>
 #endif
 
-#include "../../power_meas_utils/measurments_utils.h"
+#include "measurments_utils.h"
 extern AT_HYPERFLASH_FS_EXT_ADDR_TYPE yamnet_L3_Flash;
 #endif
