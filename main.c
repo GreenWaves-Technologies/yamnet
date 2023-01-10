@@ -96,6 +96,12 @@ int test_yamnet(void)
         pmsis_exit(-6);
     }
 
+    printf("Opening file: %s\n", FileName);
+    if (ReadWavFromFile(FileName, Input_1, BUF_SIZE*sizeof(short), &header_info)){
+        printf("Error reading wav file\n");
+        pmsis_exit(1);
+    }
+
     printf("Call cluster\n");
 #ifndef __EMUL__
     struct pi_cluster_task task;

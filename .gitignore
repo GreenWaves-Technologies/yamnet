@@ -3,3 +3,5 @@ BUILD*
 __pycache__
 *_emul
 logs
+log_meas*
+build

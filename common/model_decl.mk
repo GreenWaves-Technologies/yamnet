@@ -19,6 +19,7 @@ MODEL_BUILD = BUILD_MODEL$(MODEL_SUFFIX)
 
 TENSORS_DIR = $(MODEL_BUILD)/tensors
 MODEL_TENSORS = $(MODEL_BUILD)/$(MODEL_PREFIX)_L3_Flash_Const.dat
+MODEL_SEC_TENSORS = $(MODEL_BUILD)/$(MODEL_PREFIX)_L3_PrivilegedFlash_Const.dat
 
 MODEL_STATE = $(MODEL_BUILD)/$(MODEL_PREFIX).json
 # if AT_MODEL_PATH is already set then don't run the nntool steps

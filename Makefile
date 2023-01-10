@@ -11,10 +11,9 @@ endif
 ifneq '$(TARGET_CHIP_FAMILY)' 'GAP9'
   $(error This Project is only for GAP9)
 endif
+HOMEDIR = $(CURDIR)
 include common.mk
 include common/model_decl.mk
-
-WAVFILE = $(CURDIR)/calibration_features/speech_whistling_cut.wav
 
 io?=host
 
@@ -46,8 +45,22 @@ else ifeq '$(RAM_TYPE)' 'DEFAULT'
   MODEL_L3_RAM=AT_MEM_L3_DEFAULTRAM
 endif
 
+
+ONLY_NN?=0
+ifeq ($(ONLY_NN), 0)
+  MAIN = main.c
+  WAVFILE = $(CURDIR)/calibration_features/speech_whistling_cut.wav
+else
+  MAIN = yamnet.c
+  ifneq '$(platform)' 'gvsoc'
+  ifdef MEAS
+  APP_CFLAGS += -DGPIO_MEAS
+  endif
+  endif
+endif
+
 APP = $(MODEL_PREFIX)
-APP_SRCS += $(MODEL_PREFIX).c $(MODEL_GEN_C) $(MODEL_COMMON_SRCS) $(CNN_LIB) $(GAP_LIB_PATH)/wav_io/wavIO.c 
+APP_SRCS += $(MAIN) $(MODEL_GEN_C) $(MODEL_COMMON_SRCS) $(CNN_LIB) $(GAP_LIB_PATH)/wav_io/wavIO.c 
 
 APP_CFLAGS  += -w -g -O3 -mno-memcpy -fno-tree-loop-distribute-patterns
 APP_CFLAGS  += -I. -I$(GAP_SDK_HOME)/utils/power_meas_utils -I$(MODEL_COMMON_INC) -I$(TILER_EMU_INC) -I$(TILER_INC) $(CNN_LIB_INCLUDE) -I$(MODEL_BUILD) -I$(GAP_SDK_HOME)/libs/gap_lib/include 
@@ -65,8 +78,16 @@ ifeq '$(PMSIS_OS)' 'pulpos'
 endif
 endif
 
-READFS_FILES=$(abspath $(MODEL_TENSORS))
+ifeq ($(USE_PRIVILEGED_FLASH), 1)
+MODEL_SEC_L3_FLASH=AT_MEM_L3_MRAMFLASH
+else
+MODEL_SEC_L3_FLASH=
+endif
 
+READFS_FILES=$(abspath $(MODEL_TENSORS))
+ifneq ($(MODEL_SEC_L3_FLASH), )
+  runner_args += --flash-property=$(CURDIR)/$(MODEL_SEC_TENSORS)@mram:readfs:files
+endif
 # build depends on the model
 build:: model
 

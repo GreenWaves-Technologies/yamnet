@@ -1,4 +1,5 @@
 name: YAMNet
+builder: cmake
 boards: []
 platforms: 
     - board

@@ -1,9 +1,9 @@
 set log_level INFO
 adjust 
 fusions --scale8 
-dsp_preprocessing input_1 MFCCPreprocessingParameters --config_json models/logmel_config.json
+dsp_preprocessing input_1 MFCCPreprocessingParameters --config_json $(HOMEDIR)/models/logmel_config.json
 set input_norm_func "x: x/(1<<15)"
-aquant --scheme SQ8 calibration_features/speech_whistling_cut.wav --hwc --slices 0 15600 1
+aquant --scheme SQ8 $(HOMEDIR)/calibration_features/speech_whistling_cut.wav --hwc --slices 0 15600 1
 adjust
 qtune --step MfccPreprocessing scheme=float float_type=float32
 qtune --step input_1 scheme=pow2
@@ -13,6 +13,9 @@ fusions --scale8
 set l3_ram_device $(MODEL_L3_RAM)
 set l3_flash_device $(MODEL_L3_FLASH)
 set graph_const_exec_from_flash true
+
+set privileged_l3_flash_device $(MODEL_SEC_L3_FLASH)
+set privileged_l3_flash_size 1950000
 
 nodeoption input_1 ALLOCATE 1
 #set graph_dump_tensor 4
