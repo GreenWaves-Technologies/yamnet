@@ -26,7 +26,7 @@
 
 AT_HYPERFLASH_FS_EXT_ADDR_TYPE yamnet_L3_Flash = 0;
 AT_HYPERFLASH_FS_EXT_ADDR_TYPE yamnet_L3_PrivilegedFlash = 0;
-signed char Output_1[521];
+unsigned char Output_1[521];
 #define __XSTR(__s) __STR(__s)
 #define __STR(__s) #__s
 char *FileName = __XSTR(AT_WAV);
@@ -93,7 +93,7 @@ int test_yamnet(void)
     if (ConstructorErr)
     {
         printf("Graph constructor exited with error: %d\n(check the generated file yamnetKernels.c to see which memory have failed to be allocated)\n", ConstructorErr);
-        pmsis_exit(-6);
+        return -6;
     }
 
     printf("Opening file: %s\n", FileName);
@@ -132,7 +132,7 @@ int test_yamnet(void)
     #ifdef CI
     if(max_idx != 35 || max_confidence < 125){
         printf("Results Error...\n");
-        pmsis_exit(1);
+        return 1;
     }
     else
         printf("Correct Results!\n");
@@ -140,7 +140,6 @@ int test_yamnet(void)
 
 
     printf("Ended\n");
-    pmsis_exit(0);
     return 0;
 }
 
