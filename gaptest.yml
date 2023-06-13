@@ -1,19 +1,17 @@
 name: YAMNet
-builder: cmake
-boards: []
-platforms: 
-    - board
-    - gvsoc
-os: 
-    - freertos
-    - pulpos
-chips: 
-    - gap9
 variants:
-    std:
-        name: standard
-        tags:
-            - integration
-            - release
-        duration: standard
+    gvsoc_make:
+        chip: gap9
+        board: gap9evk
+        platform: gvsoc
+        os: freertos
+        builder: make
+        flags: ~
+
+    board_make:
+        chip: gap9
+        board: gap9evk
+        platform: board
+        os: freertos
+        builder: make
         flags: ~
