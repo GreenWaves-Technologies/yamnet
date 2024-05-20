@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2017 GreenWaves Technologies
+ * Copyright (C) 2024 GreenWaves Technologies
  * All rights reserved.
  *
  * This software may be modified and distributed under the terms
@@ -14,10 +14,6 @@
 #include "yamnetKernels.h"
 #include "gaplib/wavIO.h"
 #include "yamnet_class_map.h"
-
-#ifdef __EMUL__
-#define pmsis_exit(n) exit(n)
-#endif
 
 #define  BUF_SIZE   15600
 #ifndef STACK_SIZE
@@ -62,7 +58,7 @@ int test_yamnet(void)
 {
     printf("Entering main controller\n");
 
-#ifndef __EMUL__
+
     OPEN_GPIO_MEAS();
     /* Configure And open cluster. */
     struct pi_device cluster_dev = {0};
@@ -86,7 +82,6 @@ int test_yamnet(void)
     // pi_pmu_voltage_set(PI_PMU_VOLTAGE_DOMAIN_CHIP, VOLTAGE);
     // printf("Voltage: %dmV\n", VOLTAGE);
     #endif
-#endif
     // IMPORTANT - MUST BE CALLED AFTER THE CLUSTER IS SWITCHED ON!!!!
     printf("Constructor\n");
     int ConstructorErr = yamnetCNN_Construct();
@@ -103,14 +98,11 @@ int test_yamnet(void)
     }
 
     printf("Call cluster\n");
-#ifndef __EMUL__
+
     struct pi_cluster_task task;
     pi_cluster_task(&task, (void (*)(void *))cluster, NULL);
     pi_cluster_task_stacks(&task, NULL, SLAVE_STACK_SIZE);
     pi_cluster_send_task_to_cl(&cluster_dev, &task);
-#else
-    cluster();
-#endif
 
     yamnetCNN_Destruct();
 
@@ -137,7 +129,6 @@ int test_yamnet(void)
     else
         printf("Correct Results!\n");
     #endif
-
 
     printf("Ended\n");
     return 0;
