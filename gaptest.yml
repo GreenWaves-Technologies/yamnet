@@ -5,7 +5,7 @@ variants:
         board: gap9evk
         platform: gvsoc
         os: freertos
-        builder: make
+        builder: cmake
         flags: ~
 
     board_make:
@@ -13,5 +13,5 @@ variants:
         board: gap9evk
         platform: board
         os: freertos
-        builder: make
+        builder: cmake
         flags: ~
